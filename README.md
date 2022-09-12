@@ -1,6 +1,6 @@
 # Vet clinic database
 
-> In this project I build a database for a vet clinic using PostgreSQL.
+> In this project I have built a database for a vet clinic using PostgreSQL.
 
 ## Getting Started
 
