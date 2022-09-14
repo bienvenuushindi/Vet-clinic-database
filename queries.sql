@@ -9,8 +9,9 @@ SELECT * from animals WHERE neutered='t';
 SELECT * from animals WHERE name !='Gabumon';
 SELECT * from animals WHERE weight_kg BETWEEN 10.4 AND 17.3;
 
-BEGIN; UPDATE animals SET species='unspecified'; ROLLBACK;
+/*Phase 2*/
 
+BEGIN; UPDATE animals SET species='unspecified'; ROLLBACK;
 
 BEGIN;
 UPDATE animals SET species='digimon' WHERE name LIKE '%mon';
@@ -40,3 +41,6 @@ SELECT SUM(weight_kg) / count(weight_kg) as AVERAGE_WEIGHT FROM animals;
 SELECT MAX(escape_attempts) FROM animals;
 SELECT MIN(weight_kg), MAX(weight_kg) FROM animals GROUP BY species;
 SELECT AVG(escape_attempts) as AVERAGE_BY_SPECIES FROM animals WHERE date_of_birth BETWEEN '1990-01-01' AND '2000-12-31' GROUP BY species;
+
+/*Phase 3*/
+

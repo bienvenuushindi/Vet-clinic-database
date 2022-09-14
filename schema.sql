@@ -9,5 +9,19 @@ CREATE TABLE animals (
     PRIMARY KEY(id)
 );
 
+/*Phase 2*/
 
 ALTER TABLE animals  ADD species varchar;
+
+/*Phase 3*/
+
+CREATE TABLE owners(
+    id  SERIAL PRIMARY KEY,
+    full_name VARCHAR,
+    age INT
+);
+
+CREATE TABLE species(
+    id  SERIAL PRIMARY KEY,
+    name VARCHAR
+);
