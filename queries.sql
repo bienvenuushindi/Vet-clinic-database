@@ -1,4 +1,4 @@
-/*Queries that provide answers to the questions from all projects.*/
+/*-- Queries that provide answers to the questions from all projects. --*/
 
 SELECT * from animals WHERE name LIKE '%mon';
 SELECT name from animals WHERE date_of_birth BETWEEN '2016-01-01' AND '2019-12-31';
@@ -9,7 +9,7 @@ SELECT * from animals WHERE neutered='t';
 SELECT * from animals WHERE name !='Gabumon';
 SELECT * from animals WHERE weight_kg BETWEEN 10.4 AND 17.3;
 
-/*Phase 2*/
+/*-- Phase 2 --*/
 
 BEGIN; UPDATE animals SET species='unspecified'; ROLLBACK;
 
@@ -42,5 +42,4 @@ SELECT MAX(escape_attempts) FROM animals;
 SELECT MIN(weight_kg), MAX(weight_kg) FROM animals GROUP BY species;
 SELECT AVG(escape_attempts) as AVERAGE_BY_SPECIES FROM animals WHERE date_of_birth BETWEEN '1990-01-01' AND '2000-12-31' GROUP BY species;
 
-/*Phase 3*/
-
+-- Phase 3
