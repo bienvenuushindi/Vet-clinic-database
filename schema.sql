@@ -41,3 +41,43 @@ ALTER TABLE animals ADD CONSTRAINT fk_owners
 FOREIGN KEY (owners_id)
 REFERENCES owners(id)
 ON DELETE CASCADE;
+
+-- Phase 4
+
+CREATE TABLE vets (
+      id INT GENERATED ALWAYS AS IDENTITY,
+      name VARCHAR,
+      age INT,
+      date_of_graduation DATE,
+      PRIMARY KEY (id)
+);
+
+CREATE TABLE specializations(
+ id INT GENERATED ALWAYS AS IDENTITY,
+ vet_id INT,
+ specie_id INT
+);
+ALTER TABLE specializations ADD CONSTRAINT fk_vets
+FOREIGN KEY (vet_id)
+REFERENCES vets(id)
+ON DELETE CASCADE;
+ALTER TABLE specializations ADD CONSTRAINT fk_species
+FOREIGN KEY (specie_id)
+REFERENCES species(id)
+ON DELETE CASCADE;
+
+CREATE TABLE visits(
+ id INT GENERATED ALWAYS AS IDENTITY,
+ vet_id INT,
+ animal_id INT,
+ date_of_visit DATE
+);
+
+ALTER TABLE visits ADD CONSTRAINT fk_vets
+FOREIGN KEY (vet_id)
+REFERENCES vets(id)
+ON DELETE CASCADE;
+ALTER TABLE visits ADD CONSTRAINT fk_animals
+FOREIGN KEY (animal_id)
+REFERENCES animals(id)
+ON DELETE CASCADE;
