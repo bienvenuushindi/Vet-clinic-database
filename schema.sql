@@ -9,5 +9,35 @@ CREATE TABLE animals (
     PRIMARY KEY(id)
 );
 
+/*Phase 2*/
 
 ALTER TABLE animals  ADD species varchar;
+
+/*Phase 3*/
+
+CREATE TABLE owners(
+    id INT GENERATED ALWAYS AS IDENTITY,
+    full_name VARCHAR,
+    age INT,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE species(
+     id INT GENERATED ALWAYS AS IDENTITY,
+    name VARCHAR,
+    PRIMARY KEY(id)
+);
+
+ALTER TABLE animals DROP COLUMN species;
+
+ALTER TABLE animals ADD COLUMN  species_id INT;
+ALTER TABLE animals ADD CONSTRAINT fk_species
+FOREIGN KEY (species_id)
+REFERENCES species(id)
+ON DELETE CASCADE;
+
+ALTER TABLE animals ADD COLUMN  owners_id INT;
+ALTER TABLE animals ADD CONSTRAINT fk_owners
+FOREIGN KEY (owners_id)
+REFERENCES owners(id)
+ON DELETE CASCADE;
