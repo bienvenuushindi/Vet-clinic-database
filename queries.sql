@@ -128,10 +128,11 @@ HAVING COUNT(*) =
               GROUP BY A.owners_id) as count_results);
 -- Phase 4
 --     Who was the last animal seen by William Tatcher?
-SELECT B.name, A.date_of_visit as Last_Visit
+SELECT B.name as vet_name, Anim.name as animal_name, A.date_of_visit as Last_Visit
 FROM visits A
          RIGHT JOIN vets B ON A.vet_id = B.id
-GROUP BY B.name, A.date_of_visit
+         RIGHT JOIN animals Anim ON A.vet_id = Anim.id
+GROUP BY B.name, A.date_of_visit, animal_name
 HAVING MAX(A.date_of_visit) =
        (SELECT MAX(vet_visits.date_of_visit)
         FROM (SELECT * From visits WHERE vet_id = (SELECT id FROM vets WHERE name = 'William Tatcher')) as vet_visits);
@@ -179,28 +180,31 @@ HAVING MAX(A.date_of_visit) =
 --     How many visits were with a vet that did not specialize in that animal's species?
 SELECT V.*
 FROM visits V
-WHERE V.vet_id = (
-    SELECT S.vet_id
-    FROM specializations S
-    WHERE S.vet_id = V.vet_id
-      AND S.specie_id = -- get vet list of a specific specie
-          (
-              SELECT species_id
-              FROM animals
-              WHERE id = V.animal_id -- return a specie of a specific animal
-          )
-);
+WHERE NOT (select exists(select 1
+                         from (SELECT S.vet_id
+                               FROM specializations S
+                               WHERE S.specie_id = -- get vet list of a specific specie
+                                     (
+                                         SELECT species_id
+                                         FROM animals
+                                         WHERE id = V.animal_id -- return a specie of a specific animal
+                                     ))
+                                  as specific_specie_vets
+                         where specific_specie_vets.vet_id = V.vet_id));
 --     What specialty should Maisy Smith consider getting? Look for the species she gets the most.
-SELECT  Vet.name as vet_name, count(SP.name) as Visited , SP.name as specialty
+SELECT Vet.name as vet_name, count(SP.name) as Visited, SP.name as specialty
 FROM visits V
          LEFT JOIN vets Vet ON Vet.id = V.vet_id
          LEFT JOIN animals A ON A.id = V.animal_id
          LEFT JOIN species SP ON SP.id = A.species_id
-WHERE V.vet_id = (SELECT id FROM vets WHERE name = 'Maisy Smith') GROUP BY SP.name,Vet.name HAVING COUNT(SP.name)=
-(SELECT MAX(results.count)
-FROM (SELECT count(visit_per_vet.specie_id)
-      FROM (SELECT A.species_id as specie_id
-            FROM visits V
-                     LEFT JOIN animals A ON A.id = V.animal_id
-            WHERE V.vet_id = (SELECT id FROM vets WHERE name = 'Maisy Smith')) as visit_per_vet GROUP BY visit_per_vet.specie_id) as results);
+WHERE V.vet_id = (SELECT id FROM vets WHERE name = 'Maisy Smith')
+GROUP BY SP.name, Vet.name
+HAVING COUNT(SP.name) =
+       (SELECT MAX(results.count)
+        FROM (SELECT count(visit_per_vet.specie_id)
+              FROM (SELECT A.species_id as specie_id
+                    FROM visits V
+                             LEFT JOIN animals A ON A.id = V.animal_id
+                    WHERE V.vet_id = (SELECT id FROM vets WHERE name = 'Maisy Smith')) as visit_per_vet
+              GROUP BY visit_per_vet.specie_id) as results);
 
