@@ -178,7 +178,7 @@ GROUP BY C.name, B.name, A.id, A.date_of_visit
 HAVING MAX(A.date_of_visit) =
        (SELECT MAX(date_of_visit) FROM visits);
 --     How many visits were with a vet that did not specialize in that animal's species?
-SELECT V.*
+SELECT COUNT(visit_with_no_specialist.id) as NUMBER_Visits_WIth_vets_THAT_DID_NOT_SPECIALIZE FROM (SELECT V.*
 FROM visits V
 WHERE NOT (select exists(select 1
                          from (SELECT S.vet_id
@@ -190,7 +190,7 @@ WHERE NOT (select exists(select 1
                                          WHERE id = V.animal_id -- return a specie of a specific animal
                                      ))
                                   as specific_specie_vets
-                         where specific_specie_vets.vet_id = V.vet_id));
+                         where specific_specie_vets.vet_id = V.vet_id))) as visit_with_no_specialist;
 --     What specialty should Maisy Smith consider getting? Look for the species she gets the most.
 SELECT Vet.name as vet_name, count(SP.name) as Visited, SP.name as specialty
 FROM visits V
